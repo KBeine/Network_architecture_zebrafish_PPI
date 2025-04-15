@@ -1,0 +1,99 @@
+# Load required package
+#install.packages("ggplot2")
+#install.packages("dplyr")
+#install.packages("patchwork")
+library(ggplot2)
+library(dplyr)
+library(patchwork)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data
+data <- read.csv("your_data.csv")
+data <- mutate(data, DFA = as.factor(DFA))
+
+# Plots for TS
+# Base plot setup
+base_plot <- ggplot(data, aes(x = TS_lfc_squared, color = DFA, shape = DFA)) +
+             geom_point(size = 5, alpha = 0.4) +
+             theme_minimal() +
+             theme(legend.position = "none") +
+             labs(x = "TS_lfc_squared") +
+             scale_color_manual(values = c("H" = "#5e3c75",
+                                           "I" = "#4d6794",
+                                           "P" = "#75eb95"))
+
+# Individual plots
+p1 <- base_plot + aes(y = GO_TS_total)
+p2 <- base_plot + aes(y = PHE_TS_total)
+p3 <- base_plot + aes(y = DIS_TS_total)
+
+# Combine plots using patchwork
+combined_TS_plot <- p1 / p2 / p3 + plot_layout(heights = c(1, 1, 1))
+
+# Save the plot as PDF
+ggsave("combined_TS_plots.pdf", plot = combined_TS_plot, device = "pdf", width = 8, height = 12, units = "in")
+
+# Display
+combined_TS_plot
+
+# Plots for UV
+# Base plot setup
+base_plot <- ggplot(data, aes(x = UV_lfc_squared, color = DFA, shape = DFA)) +
+             geom_point(size = 5, alpha = 0.4) +
+             theme_minimal() +
+             theme(legend.position = "none") +
+             labs(x = "UV_lfc_squared") +
+             scale_color_manual(values = c("H" = "#5e3c75",
+                                           "I" = "#4d6794",
+                                           "P" = "#75eb95"))
+
+# Individual plots
+p1 <- base_plot + aes(y = GO_UV_total)
+p2 <- base_plot + aes(y = PHE_UV_total)
+p3 <- base_plot + aes(y = DIS_UV_total)
+
+# Combine plots using patchwork
+combined_UV_plot <- p1 / p2 / p3 + plot_layout(heights = c(1, 1, 1))
+
+# Save the plot as PDF
+ggsave("combined_UV_plots.pdf", plot = combined_UV_plot, device = "pdf", width = 8, height = 12, units = "in")
+
+# Display
+combined_UV_plot
+
+# Plots for TSUV
+# Base plot setup
+base_plot <- ggplot(data, aes(x = TSUV_lfc_squared, color = DFA, shape = DFA)) +
+             geom_point(size = 5, alpha = 0.4) +
+             theme_minimal() +
+             theme(legend.position = "none") +
+             labs(x = "TSUV_lfc_squared") +
+             scale_color_manual(values = c("H" = "#5e3c75",
+                                           "I" = "#4d6794",
+                                           "P" = "#75eb95"))
+
+# Individual plots
+p1 <- base_plot + aes(y = GO_TSUV_total)
+p2 <- base_plot + aes(y = PHE_TSUV_total)
+p3 <- base_plot + aes(y = DIS_UV_total)  # <- Consider fixing to DIS_TSUV_total if that's intended
+
+# Combine plots using patchwork
+combined_TSUV_plot <- p1 / p2 / p3 + plot_layout(heights = c(1, 1, 1))
+
+# Save the plot as PDF
+ggsave("combined_TSUV_plots.pdf", plot = combined_TSUV_plot, device = "pdf", width = 8, height = 12, units = "in")
+
+# Display
+combined_TSUV_plot
+
+# Combine all plots
+combined_plot_final <- combined_TS_plot | combined_UV_plot | combined_TSUV_plot
+combined_plot_final <- combined_plot_final + plot_layout(ncol = 3)
+
+# Save final combined plot
+ggsave("combined_plot_final.pdf", plot = combined_plot_final, device = "pdf", width = 8, height = 8, units = "in")
+
+# Display
+combined_plot_final
