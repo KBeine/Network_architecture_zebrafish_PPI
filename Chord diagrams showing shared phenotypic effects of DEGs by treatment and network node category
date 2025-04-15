@@ -1,0 +1,67 @@
+# Load required package
+#install.packages("circlize")
+library(circlize)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data and convert to matrix
+data <- read.csv("your_data.csv", row.names = 1)
+data <- as.matrix(data)
+
+#create a chord diagram
+chordDiagram(data)
+
+#Clear the plot so we can create a new one
+circos.clear()
+
+#assign color to each group of the diseases
+col = c(Pnodes.ThermalStress="grey", Inodes.ThermalStress="grey", Hnodes.ThermalStress="grey",
+        Pnodes.UVtreatment="#85929E", Inodes.UVtreatment="#85929E" , Hnodes.UVtreatment="#85929E" ,
+        Pnodes.ThermalStressandUVtreatment="#2E4053", Inodes.ThermalStressandUVtreatment="#2E4053" , Hnodes.ThermalStressandUVtreatment="#2E4053",
+        Cystitis="#39558c", Diabetic.retinopathy="#39558c", Melanoma="#39558c", Optic.neuritis="#39558c", Pancreatic.cancer="#39558c", Vitiligo="#39558c", Pseudoxanthoma.elasticum="#39558c",
+        Brain.ischemia="#fde725", Congenital.nonspherocytic.hemolytic.anemia="#fde725", Glycogen.storage.disease="#fde725", Inclusion.body.myositis="#fde725", Neuromuscular.disease="#fde725", Sciatic.neuropathy="#fde725",
+        Type.2.diabetes.mellitus="#440154", Hereditary.spastic.paraplegia="#440154", Nephrogenic.diabetes.insipidus="#440154", Oculocutaneous.albinism="#440154", Osteogenesis.imperfecta="#440154", Osteogenesis.imperfecta.type.4="#440154", Pigmentation.disease="#440154", Spondylocostal.dysostosis="#440154", Ullrich.congenital.muscular.dystrophy="#440154",
+        Pulmonary.fibrosis="#bade28", Urinary.bladder.cancer="#bade28", Type.I.diabetes.mellitus="#20a386", Cardiomyopathy="#bade28", Cataract="#bade28", Ehlers.Danlos.syndrome="#bade28", Alzheimers.disease="#bade28", Asthma="#bade28", Breast.cancer="#56c667", Dilated.cardiomyopathy="#bade28", Hypertension="#56c667", Myocardial.infarction="#bade28", Prostate.cancer="#56c667", Renal.cell.carcinoma="#56c667")
+
+
+#assign color to each group of the GO biological processes
+col = c(Pnodes.ThermalStress="grey", Inodes.ThermalStress="grey", Hnodes.ThermalStress="grey",
+        Pnodes.UVtreatment="#85929E", Inodes.UVtreatment="#85929E" , Hnodes.UVtreatment="#85929E" ,
+        Pnodes.ThermalStressandUVtreatment="#2E4053", Inodes.ThermalStressandUVtreatment="#2E4053" , Hnodes.ThermalStressandUVtreatment="#2E4053",
+        Carboxylic.acid.metabolic.proc.="#39558c", Cellular.amino.acid.biosynthetic.proc.="#39558c", Glutamine.family.amino.acid.metabolic.proc.="#39558c", Oxoacid.metabolic.proc.="#39558c", Response.to.oxidative.stress="#39558c", Small.molecule.metabolic.proc.="#39558c",
+        ADP.metabolic.proc.="#fde725", ATP.generation.from.ADP="#fde725", ATP.metabolic.proc.="#fde725", Glycolytic.proc.="#fde725", Nucleoside.diphosphate.phosphorylation="#fde725",
+        Nucleotide.phosphorylation="#fde725", Purine.nucleoside.diphosphate.metabolic.proc.="#fde725", Purine.nucleotide.metabolic.proc.="#fde725", Purine.ribonucleotide.metabolic.proc.="#fde725", Purine.containing.compound.metabolic.proc.="#fde725", Pyruvate.metabolic.proc.="#fde725", Ribonucleoprotein.complex.biogenesis="#fde725", Ribonucleoside.diphosphate.metabolic.proc.="#fde725", Ribosome.biogenesis="#fde725",
+        Anatomical.structure.formation.involved.in.morphogenesis="#440154", Camera.type.eye.development="#440154", Cell.development="#440154",Cell.differentiation="#440154",Cellular.developmental.proc.="#440154",Eye.development="#440154",Muscle.cell.development="#440154",Muscle.structure.development="#440154",Sarcomere.organization="#440154",Sensory.organ.development="#440154",Striated.muscle.cell.differentiation="#440154",Visual.system.development="#440154",
+        Carbohydrate.catabolic.proc.="#20a386", Monocarboxylic.acid.metabolic.proc.="#20a386", Anatomical.structure.morphogenesis="#20a386", Animal.organ.development="#20a386", Tissue.development="#20a386")
+
+#assign color to each group of the Phenotype
+col = c(Pnodes.ThermalStress="grey", Inodes.ThermalStress="grey", Hnodes.ThermalStress="grey",
+        Pnodes.UVtreatment="#85929E", Inodes.UVtreatment="#85929E" , Hnodes.UVtreatment="#85929E" ,
+        Pnodes.ThermalStressandUVtreatment="#2E4053", Inodes.ThermalStressandUVtreatment="#2E4053" , Hnodes.ThermalStressandUVtreatment="#2E4053",
+        Central.nervous.system.necrotic.abnormal="#fde725", Fourth.ventricle.distended.abnormal="#fde725", Gut.hypoplastic.abnormal="#fde725", Liver.hypoplastic.abnormal="#fde725", Trunk.decreased.thickness.abnormal="#fde725", Yolk.circular.abnormal="#fde725", Yolk.grey.abnormal="#fde725",
+        Centrum.decreased.volume.abnormal="#440154", Cranial.vault.decreased.thickness.abnormal="#440154", Hemal.arch.decreased.volume.abnormal="#440154", Neural.arch.decreased.volume.abnormal="#440154", Osteoblast.increased.accumulation.abnormal="#440154", Spinal.cord.curved.abnormal="#440154", Thigmotaxis.disrupted.abnormal="#440154", Vertebra.composition.abnormal="#440154", Vertebra.deformed.abnormal="#440154",
+        Eye.decreased.size.abnormal="#20a386", Head.decreased.size.abnormal="#20a386", Pericardium.edematous.abnormal="#20a386")
+
+# Open a PDF device
+pdf("Phenotype.pdf", width = 10, height = 8)
+
+# Set graphical parameters to adjust the margins
+par(mar = c(5, 5, 2, 2))  # Set the bottom, left, top, and right margins
+
+#create a chord diagram but without labeling
+chordDiagram(data, grid.col = col, annotationTrack = "grid", preAllocateTracks = 1)
+
+#add the labels and axis
+circos.trackPlotRegion(track.index = 2, panel.fun = function(x, y) {
+  xlim = get.cell.meta.data("xlim")
+  ylim = get.cell.meta.data("ylim")
+  sector.name = get.cell.meta.data("sector.index")
+
+  #print labels
+  circos.text(mean(xlim), ylim[1] + 2.5, sector.name,
+              facing = "clockwise", niceFacing = TRUE, adj = c(0, 0.5), cex=0.6)
+}, bg.border = NA)
+
+# Close the PDF device
+dev.off()
