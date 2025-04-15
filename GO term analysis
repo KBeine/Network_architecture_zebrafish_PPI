@@ -1,0 +1,59 @@
+##### Use R base 4.3 for these packages #####
+#install.packages("BiocManager")
+#BiocManager::install("topGO")
+#BiocManager::install("EnhancedVolcano")
+#BiocManager::install("org.Dr.eg.db")
+library(dplyr); library(topGO); library(EnhancedVolcano)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data
+data <- read.csv("your_data.csv")
+
+TS.genes.ls <- TS.genes$symbol
+TS.genes.p <- TS.genes$pvalue
+names(TS.genes.p) <- TS.genes.ls
+GOdata.TS <- new("topGOdata",
+                 ontology = "BP",
+                 allGenes = TS.genes.p,
+                 geneSelectionFun = function(x)x,
+                 annot = annFUN.org, mapping = "org.Dr.eg.db", ID="SYMBOL")
+# The Go: number coresponds to the QuickGo website where you can find the term of interest: https://www.ebi.ac.uk/QuickGO/
+
+Stress_response = c("GO:0006950") # term of interest: stress response [Accessed August 2023]
+stress_genes <- genesInTerm(GOdata.TS, Stress_response)
+for (i in 1:length(Stress_response)) {
+  Stress_response <- Stress_response[i]
+  stress.response.genes <- stress_genes[Stress_response][[1]]
+  stress.response.genes <- paste(stress.response.genes, collapse=',')
+  print(paste(stress.response.genes))}
+
+stress.GOI <- stress_genes$`GO:0006950`
+stress.GOI.tab <- subset(TS.genes, symbol %in% stress.GOI)
+stress.list.ENSD <- stress.GOI.tab$symbol
+
+TSvsC_GOI.stress <- TS.genes %>%
+  filter(symbol %in%
+           stress.list.ENSD)
+TSvsC_GOI.stress.plot <- EnhancedVolcano(TSvsC_GOI.stress,
+                                        lab = TSvsC_GOI.stress$symbol,
+                                        pCutoff=0.05,
+                                        FCcutoff = log2(1.5),
+                                        x = 'log2FoldChange',
+                                        y = 'pvalue',
+                                        ylab=bquote(~-Log[10]~pvalue),
+                                        xlab=bquote(~Log[2]~ "Fold-Change"),
+                                        title="Stress response genes for UV_CvTS", subtitle=NULL,
+                                        caption=paste0('n = ', nrow(TSvsC_GOI.stress), ' genes'),
+                                        legendLabels=c('NS', 'Log2 FC', 'P-value', 'P-value & Log2 FC'))+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank() )
+
+
+pdf("TSvsC_GOI_stressresponse_volcan_plot.pdf")
+TSvsC_GOI.stress.plot
+dev.off()
+
+write.csv(TSvsC_GOI.stress, "TSvsC_GOI.stressresponse.csv")
