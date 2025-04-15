@@ -1,0 +1,82 @@
+# Load required package
+#install.packages("eulerr")
+library(eulerr)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data
+data <- read.csv("your_data.csv")
+
+# Define DEG Sets (Drop NA, Ensure Uniqueness)
+set_TS       <- unique(na.omit(data$C.vs.TS))
+set_UV       <- unique(na.omit(data$UV.vs.non.UV))
+set_TS_UV    <- unique(na.omit(data$UV.vs.UV.preceded.by.heat))
+
+# Compute Unique and Overlapping DEG Counts
+# Unique to each group only
+only_TS        <- length(setdiff(set_TS, union(set_UV, set_TS_UV)))
+only_UV        <- length(setdiff(set_UV, union(set_TS, set_TS_UV)))
+only_TS_UV     <- length(setdiff(set_TS_UV, union(set_TS, set_UV)))
+
+# Pairwise overlaps (excluding triple overlap)
+TS_UV          <- length(setdiff(intersect(set_TS, set_UV), set_TS_UV))
+TS_TSUV        <- length(setdiff(intersect(set_TS, set_TS_UV), set_UV))
+UV_TSUV        <- length(setdiff(intersect(set_UV, set_TS_UV), set_TS))
+
+# All three groups
+all_three      <- length(intersect(set_TS, intersect(set_UV, set_TS_UV)))
+
+venn_counts <- c(
+  "TS"              = only_TS,
+  "UV"              = only_UV,
+  "TS->UV"          = only_TS_UV,
+  "TS&UV"           = TS_UV,
+  "TS&TS->UV"       = TS_TSUV,
+  "UV&TS->UV"       = UV_TSUV,
+  "TS&UV&TS->UV"    = all_three
+)
+
+custom_colors <- c(
+  "TS"              = "#9283a7",    # Purple
+  "UV"              = "#94c3c3",    # Teal Blue
+  "TS->UV"          = "#fbf393",    # Yellow
+  "TS&UV"           = "#61879a",    # Muted Blue
+  "TS&TS->UV"       = "#cfb367",    # Golden
+  "UV&TS->UV"       = "#c6d775",    # Light Green
+  "TS&UV&TS->UV"    = "#afb75f"     # Olive
+)
+
+venn_plot <- euler(
+  venn_counts,
+  control = list(positions = list(
+    c(-0.6, 0.6),   # TS
+    c(0.6, 0.6),    # UV
+    c(0, -0.5)      # TS->UV
+  ))
+)
+
+# Plot Venn Diagram to Screen
+
+par(mar = c(4, 4, 4, 4))  # Adjust margins
+
+plot(
+  venn_plot,
+  fills = list(fill = unname(custom_colors), alpha = 0.9),
+  labels = FALSE,
+  edges = list(lwd = 2, col = "white"),
+  quantities = list(cex = 1.5, font = 2)
+)
+
+# Save plot to PDF
+pdf("Venn_diagram_resubmission.pdf", width = 6, height = 6)  # Adjust size as needed
+
+plot(
+  venn_plot,
+  fills = list(fill = unname(custom_colors), alpha = 0.9),
+  labels = FALSE,
+  edges = list(lwd = 2, col = "white"),
+  quantities = list(cex = 1.5, font = 2)
+)
+
+dev.off()
