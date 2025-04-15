@@ -1,0 +1,58 @@
+# Load required package
+#install.packages(c("plotly", "viridis", "magrittr"))
+library(plotly); library(viridis); library(magrittr)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data
+data <- read.csv("your_data.csv")
+
+# Convert Categorical/Character Variable to Numeric (if needed)
+# Ensures compatibility with color mapping in plotly
+if (is.factor(data$Stressor) || is.character(data$Stressor)) {
+  data$Stressor <- as.numeric(as.factor(data$Stressor))
+}
+
+# Optional: Pie Chart Overview of Categorical Variable (e.g., DFA Groupings)
+plot_ly(data, labels = ~DFA, type = 'pie')
+
+# Create a 3D Scatter Plot of Network Metrics
+plot_ly(data = data,
+        x = ~AverageShortestPathLength,         # X-axis: ASPL
+        y = ~BetweennessCentrality,             # Y-axis: BC
+        z = ~NeighborhoodConnectivity,          # Z-axis: NC
+        type = "scatter3d",                     # 3D scatter plot
+        mode = "markers",
+        marker = list(
+          color = ~Stressor,                    # Color by stressor group
+          colorscale = 'Viridis',               # Use Viridis color scale
+          size = 10),
+        opacity = 0.3
+) %>%
+  layout(
+    scene = list(
+      xaxis = list(
+        type = "log",
+        title = "Log ASPL",
+        titlefont = list(size = 30),
+        tickfont = list(size = 17)
+      ),
+      yaxis = list(
+        type = "log",
+        title = "Log BC",
+        titlefont = list(size = 30),
+        tickfont = list(size = 17)
+      ),
+      zaxis = list(
+        type = "log",
+        title = "Log NC",
+        titlefont = list(size = 30),
+        tickfont = list(size = 17),
+        tickvals = c(2, 5, 10, 20, 50, 100, 200, 500),
+        ticktext = c("2", "5", "10", "20", "50", "100", "200", "500")  # Corrected to match tickvals
+      )
+    )
+  )
+
+# Save manually from RStudio as plotly allows for moving plots
