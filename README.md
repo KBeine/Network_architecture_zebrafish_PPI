@@ -13,13 +13,21 @@ Transcriptomic data and differential gene expression used in this analysis taken
 
 All code used is in RStudio. Analysis includes:
 - Go term analysis to pull out genes related to gene ontology (stress) - Figure 1 and 2
+    - Authors: Dr. Lauric Feugere, modified by Dr. Kaylee Beine
 - Discriminant function analysis (DFA) graph to show positioning of P, I, H nodes using network statistics from Cytoscape for the network after node assignment by SPSS - Figures 1, 2-5, S1
+    - Author: Dr. Kaylee Beine
 - Pie chart graph showing percentages of nodes within each of the networks analyzed - Figures 1, 2-5, S1
+    - Author: Dr. Kaylee Beine
 - Error plot graph showing significant comparisons for network data and DEGs in treatments - Figures 1, 2-5, S1
+    - Author: Dr. Kaylee Beine
 - Venn diagram showing proportional size of DEGs in treatments - Figure 2
+    - Author: Dr. Kaylee Beine
 - Co-variation of DEG network parameters and phenotypic outcomes - Figure 6
+    - Author: Prof. Katharina C. Wollenberg Valero
 - Chord diagrams showing shared phenotypic effects of DEGs by treatment and network node category - Figure 7
+    - Author: Dr. Kaylee Beine
 - Phenotypic effects of DEGs by treatment comparison - Figure 8
+    - Author: Prof. Katharina C. Wollenberg Valero
 
 Notes
 - Ensure all your .csv files are located in your working directory.
