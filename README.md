@@ -2,6 +2,8 @@
 Network architecture of transcriptomic stress responses in zebrafish embryos
 
 Code for publishing purposes
+Preprint: https://www.biorxiv.org/content/10.1101/2024.06.30.601387v1#:~:text=Our%20results%20indicate%20that%20the,diverse%20and%20co%2Doccurring%20stressors. [Pending article review]
+DOI: https://doi.org/10.1101/2024.06.30.601387
 
 Network Data for reference in Cytoscape
 - Downloaded from Pasan Fernando's figshare:
