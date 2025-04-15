@@ -1,0 +1,57 @@
+# Load required package
+#install.packages(c("ggplot2", "dplyr", "viridis", "readr", "patchwork"))
+library(ggplot2); library(dplyr); library(viridis); library(patchwork)
+
+# Set Working Directory
+setwd("path/to/your/data")
+
+# Load Data
+data <- read.csv("your_data.csv")
+
+create_log_means_error_plot <- function(data, group_var, measure_var, y_limits = NULL) {
+
+  # Log-transform the selected variable (+1 to avoid log(0))
+  data <- data %>%
+    mutate("{measure_var}" := log(.data[[measure_var]] + 1))
+
+  # Calculate summary statistics (Mean ± SEM)
+  stats <- data %>%
+    filter(!is.na(.data[[measure_var]])) %>%
+    group_by(.data[[group_var]]) %>%
+    summarise(
+      Mean = mean(.data[[measure_var]], na.rm = TRUE),
+      SD = sd(.data[[measure_var]], na.rm = TRUE),
+      N = n(),
+      SEM = SD / sqrt(N),
+      .groups = "drop"
+    )
+
+  # Build ggplot with error bars
+  plot <- ggplot(stats, aes(x = .data[[group_var]], y = Mean, color = .data[[group_var]])) +
+    geom_point(size = 9) +
+    geom_errorbar(aes(ymin = Mean - SEM, ymax = Mean + SEM), width = 1, linewidth = 2) +
+    labs(x = group_var, y = paste("Log-transformed Mean of", measure_var)) +
+    scale_color_viridis(discrete = TRUE) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    guides(color = FALSE)
+
+  # Apply y-axis limits if provided
+  if (!is.null(y_limits)) {
+    plot <- plot + ylim(y_limits)
+  }
+
+  return(plot)
+}
+
+plot1 <- create_log_means_error_plot(data, "Fernando_STRESS", "AverageShortestPathLength", y_limits = c(3.95, 4.30))
+plot2 <- create_log_means_error_plot(data, "Fernando_STRESS", "NeighborhoodConnectivity", y_limits = c(60, 85))
+plot3 <- create_log_means_error_plot(data, "Fernando_STRESS", "BetweennessCentrality", y_limits = c(0e-04, 10e-04))
+
+combined_plot <- plot1 | plot2 | plot3
+
+# Display Combined Plot
+print(combined_plot)
+
+# Save Combined Plot as PDF
+ggsave("combined_plot.pdf", combined_plot, width = 10.17, height = 5.99, dpi = 300)
